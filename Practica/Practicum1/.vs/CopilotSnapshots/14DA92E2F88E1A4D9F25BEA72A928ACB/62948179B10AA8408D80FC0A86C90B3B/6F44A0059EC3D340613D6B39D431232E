@@ -1,0 +1,54 @@
+﻿#ifdef _MSC_VER
+/* Disable incremental linking for this object to avoid updates to vc145.idb
+   which can cause C2471 when the IDB/PDB is locked by another process. */
+#pragma comment(linker, "/INCREMENTAL:NO")
+#pragma comment(linker, "/PDB:Opdracht1.pdb")
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+
+double bereken_belasting(double inkomen)
+{
+	double belasting = 0.0;
+
+	const double grens1 = 38883.0;
+	const double grens2 = 78426.0;
+
+	const double tarief1 = 0.3575;
+	const double tarief2 = 0.3756;
+	const double tarief3 = 0.4950;
+
+	if (inkomen <= grens1)
+	{
+		belasting = inkomen * tarief1;
+	}
+	else if (inkomen <= grens2)
+	{
+		belasting = grens1 * tarief1;
+		belasting += (inkomen - grens1) * tarief2;
+	}
+	else
+	{
+		belasting = grens1 * tarief1;
+		belasting += (grens2 - grens1) * tarief2;
+		belasting += (inkomen - grens2) * tarief3;
+	}
+	return belasting;
+}
+
+int main(void)
+{
+	double inkomen;
+
+	printf("Voer uw inkomen in:");
+	if (scanf_s("%lf", &inkomen) != 1)
+	{
+		fprintf(stderr, "Ongeldige invoer.\n");
+		return 1;
+	}
+
+	double b = bereken_belasting(inkomen);
+	printf("De totale inkomstenbelasting is: %.2f euro\n", b);
+	return 0;
+}

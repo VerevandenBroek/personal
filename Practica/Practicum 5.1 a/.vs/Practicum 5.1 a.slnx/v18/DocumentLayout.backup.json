@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\verev\\iCloudDrive\\Haagse Hoge School\\Blok 3\\Programmeren in C\\Practica\\Practicum 5.1 a\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{27138B57-EC7A-42C1-B228-BC9906D1062D}|Practicum 5.1 a.vcxproj|C:\\Users\\verev\\iCloudDrive\\Haagse Hoge School\\Blok 3\\Programmeren in C\\Practica\\Practicum 5.1 a\\Opdracht 1a.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{27138B57-EC7A-42C1-B228-BC9906D1062D}|Practicum 5.1 a.vcxproj|solutionrelative:Opdracht 1a.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Opdracht 1a.c",
+              "DocumentMoniker": "C:\\Users\\verev\\iCloudDrive\\Haagse Hoge School\\Blok 3\\Programmeren in C\\Practica\\Practicum 5.1 a\\Opdracht 1a.c",
+              "RelativeDocumentMoniker": "Opdracht 1a.c",
+              "ToolTip": "C:\\Users\\verev\\iCloudDrive\\Haagse Hoge School\\Blok 3\\Programmeren in C\\Practica\\Practicum 5.1 a\\Opdracht 1a.c",
+              "RelativeToolTip": "Opdracht 1a.c",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAEUAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-03-24T21:11:55.613Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

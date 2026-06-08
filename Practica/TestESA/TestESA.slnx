@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="TestESA.vcxproj" Id="297423e2-a850-4d8c-9f5a-2ebff5756253" />
+</Solution>

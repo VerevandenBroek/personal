@@ -1,0 +1,36 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\verev\\iCloudDrive\\Haagse Hoge School\\Blok 3\\Programmeren in C\\Practica\\Simpel vierkant\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0198D53F-4D2C-4618-8692-985A38CB79BD}|Simpel vierkant.vcxproj|C:\\Users\\verev\\Downloads\\simpel_vierkant.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "simpel_vierkant.c",
+              "DocumentMoniker": "C:\\Users\\verev\\Downloads\\simpel_vierkant.c",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Downloads\\simpel_vierkant.c",
+              "ToolTip": "C:\\Users\\verev\\Downloads\\simpel_vierkant.c",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Downloads\\simpel_vierkant.c",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACoAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-03-30T15:42:56.374Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
