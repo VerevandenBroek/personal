@@ -1,0 +1,31 @@
+import can
+import time
+
+# Configureer CAN-bus (bitrate moet overeenkomen met STM32)
+bus = can.interface.Bus(channel='can0', bustype='socketcan', bitrate=200000)
+
+def vraag_sht3x_gegevens():
+    # Verstuur verzoek met ID 0x124
+    msg = can.Message(arbitration_id=0x124, data=[0, 0, 0, 0, 0, 0, 0, 0], is_extended_id=False)
+    bus.send(msg)
+    print("Verzoek om SHT3X-gegevens verzonden (ID: 0x124)")
+
+def ontvang_sht3x_gegevens():
+    while True:
+        msg = bus.recv()  # Wacht op CAN-bericht
+        if msg.arbitration_id == 0x123:  # ID voor SHT3X-gegevens
+            temp_raw = (msg.data[0] << 8) | msg.data[1]
+            hum_raw = (msg.data[2] << 8) | msg.data[3]
+            temperature = temp_raw / 100.0
+            humidity = hum_raw / 100.0
+            print(f"Temperatuur: {temperature:.2f} °C, Luchtvochtigheid: {humidity:.2f} %")
+            break
+
+if __name__ == "__main__":
+    try:
+        while True:
+            vraag_sht3x_gegevens()
+            ontvang_sht3x_gegevens()
+            time.sleep(2)  # Wacht 2 seconden voor het volgende verzoek
+    except KeyboardInterrupt:
+        print("\nScript gestopt.")
