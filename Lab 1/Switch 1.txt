@@ -1,0 +1,116 @@
+Switch 1:
+
+
+enable
+configure terminal
+
+! Basisconfiguraties
+hostname R1
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ password cisco
+ login
+ exit
+
+line vty 0 15
+ password cisco
+ login
+ exit
+
+service password-encryption
+banner motd # Waarschuwing: Ongeoorloofde toegang verboden! #
+exit
+clock set 12:46:20 16 September 2025
+write memory
+copy running-config startup-config
+
+! VLANs
+configure terminal
+vlan 10
+ name Staf
+vlan 20
+ name Students
+vlan 999
+ name Gesloten
+vlan 1000
+ name Native
+exit
+show vlan brief
+
+! VLAN interface + IP
+interface vlan 10
+ ip address 192.168.10.11 255.255.255.0
+ no shutdown
+exit
+
+! Toewijzen van ongebruikte poorten aan VLAN 999 (gesloten)
+interface range fa0/3 - 5, fa0/7 - 24, g0/1 - 2
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+! Studentenpoort (VLAN 20)
+interface fa0/6
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+show vlan brief
+
+! Trunks (EtherChannel op fa0/1-2)
+interface range fa0/1 - 2
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ channel-group 1 mode active
+exit
+show interfaces trunk
+
+! Extra trunkpoorten
+interface fa0/9
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ no shutdown
+exit
+
+interface fa0/10
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ no shutdown
+exit
+
+! RPVST
+spanning-tree mode rapid-pvst
+
+! Portfast en BPDU Guard
+interface fa0/6
+ spanning-tree portfast
+exit
+
+interface fa0/4
+ spanning-tree bpduguard enable
+exit
+
+! Port-security test op fa0/1
+interface fa0/1
+ switchport mode access
+ switchport port-security maximum 1
+ switchport port-security mac-address 0001.6394.5B76
+ switchport port-security violation shutdown
+ spanning-tree portfast
+exit
+
+end
+write memory
+
+! Controle commando’s
+show vlan brief
+show interfaces trunk
+show port-security
+
+

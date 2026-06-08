@@ -1,0 +1,100 @@
+Switch2:
+
+enable
+configure terminal
+
+! Basisconfiguraties
+hostname S2
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ password cisco
+ login
+ exit
+
+line vty 0 15
+ password cisco
+ login
+ exit
+
+service password-encryption
+banner motd # Waarschuwing: Ongeoorloofde toegang verboden! #
+
+clock set 12:46:20 16 September 2025
+end
+write memory
+copy running-config startup-config
+
+! VLANs
+configure terminal
+vlan 10
+ name Staf
+vlan 20
+ name Students
+vlan 999
+ name Gesloten
+vlan 1000
+ name Native
+exit
+show vlan brief
+
+! VLAN interface + IP
+interface vlan 10
+ ip address 192.168.10.12 255.255.255.0
+ no shutdown
+exit
+
+! Ongebruikte poorten → VLAN 999 (gesloten)
+interface range fa0/3 - 17, fa0/19 - 24, g0/1 - 2
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+! Studentenpoort (VLAN 20)
+interface fa0/18
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+show vlan brief
+
+! Trunks (EtherChannel op fa0/1-2)
+interface range fa0/1 - 2
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ channel-group 1 mode active
+exit
+show interfaces trunk
+
+! Extra trunkpoorten
+interface fa0/9
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ no shutdown
+exit
+
+interface fa0/10
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ no shutdown
+exit
+
+! RPVST
+spanning-tree mode rapid-pvst
+
+! Portfast op studentenpoort
+interface fa0/18
+ spanning-tree portfast
+exit
+
+end
+write memory
+
+! Controle commando’s
+show vlan brief
+show interfaces trunk

@@ -1,0 +1,43 @@
+MLS1
+
+enable
+configure terminal
+! Basisconfiguraties
+hostname MLS1
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ password cisco
+ login
+ exit
+
+line vty 0 15
+ password cisco
+ login
+ exit
+
+service password-encryption
+banner motd # Waarschuwing: Ongeoorloofde toegang verboden! #
+clock set 12:46:20 16 September 2025
+!
+! Interface configuraties
+interface GigabitEthernet1/0/1
+ no switchport
+ ip address 192.168.10.2 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet1/0/24
+ no switchport
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+!
+router ospf 1
+ router-id 192.168.10.2
+ network 192.168.10.0 0.0.0.255 area 1
+ network 192.168.30.0 0.0.0.255 area 1
+ passive-interface GigabitEthernet1/0/24
+!
+end
+write memory
+copy running-config startup-config

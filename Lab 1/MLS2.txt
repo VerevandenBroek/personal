@@ -1,0 +1,65 @@
+MLS2:
+
+enable
+configure terminal
+
+! Basisconfiguraties
+hostname MLS2
+no ip domain-lookup
+enable secret cisco
+
+line console 0
+ password cisco
+ login
+ exit
+
+line vty 0 15
+ password cisco
+ login
+ exit
+
+service password-encryption
+banner motd # Waarschuwing: Ongeoorloofde toegang verboden! #
+
+clock set 12:46:20 16 September 2025
+end
+write memory
+copy running-config startup-config
+
+! VLANs
+configure terminal
+vlan 10
+ name Staf
+vlan 20
+ name Students
+vlan 999
+ name Gesloten
+vlan 1000
+ name Native
+exit
+show vlan brief
+
+! VLAN interface + IP (SVI voor routing)
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+
+! Trunks
+interface range gigabitethernet1/0/1, gigabitethernet1/0/9 - 10
+ switchport mode trunk
+ switchport trunk native vlan 1000
+ switchport trunk allowed vlan 10,20,1000
+ no shutdown
+exit
+
+! RPVST configuratie
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 24576
+
+end
+write memory
+
+! Controle commando’s
+show vlan brief
+show spanning-tree vlan 20
