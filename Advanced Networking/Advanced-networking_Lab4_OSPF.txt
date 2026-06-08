@@ -1,0 +1,427 @@
+Advanced-networking_Lab4_OSPF
+++++++++++++++++++++ DEEL 2 ++++++++++++++++++++
+--- ISP ---
+en
+conf t
+hostname ISP
+
+int Se0/1/1
+no shutdown
+ip address 192.168.50.1 255.255.255.252
+clock rate 64000
+description Network on the ISP with the IPv4 side R1 router
+exit
+
+
+--- IPv4 Router1 ---
+en
+conf t
+hostname IPv4-R1
+
+int Se0/1/1
+no shutdown
+ip address 192.168.50.2 255.255.255.252
+description IPv4 Router1 network with the ISP
+exit
+
+int Se0/1/0
+no shutdown
+ip address 192.168.50.5 255.255.255.252
+clock rate 64000
+description IPv4 Router1 network with Router2
+exit
+
+int Gi0/0/0
+no shutdown
+ip address 192.168.60.5 255.255.255.252
+description IPv4 Router1 network with MLS1
+exit
+
+int Gi0/0/1
+no shutdown
+ip address 192.168.60.9 255.255.255.252
+description IPv4 Router1 network with MLS2
+exit
+
+
+--- IPv4 Router2 ---
+en
+conf t
+hostname IPv4-R2
+
+int Se0/1/1
+no shutdown
+ip address 192.168.50.6 255.255.255.252
+description IPv4 Router2 network with Router1
+exit
+
+
+--- MLS1 ---
+en
+conf t
+hostname MLS1
+
+vlan 10
+name PC1
+exit
+
+vlan 20
+name PC2
+exit
+
+ip routing
+
+int Gi1/0/1
+no switchport
+ip address 192.168.60.6 255.255.255.252
+description Network MLS1 with R1
+exit
+
+int Gi1/0/2
+no switchport
+ip address 192.168.60.1 255.255.255.252
+description Network MLS1 with MLS2
+exit
+
+int vlan 10
+ip address 192.168.10.1 255.255.255.0
+standby 10 ip 192.168.10.3
+standby 10 priority 150
+standby 10 preempt
+description Network vlan 10
+exit
+
+int vlan 20
+ip address 192.168.20.1 255.255.255.0
+standby 20 ip 192.168.20.3
+standby 20 priority 100
+standby 20 preempt
+description Network vlan 20
+exit
+
+int range Gi1/0/3-4
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+spanning-tree vlan 10 root primary
+spanning-tree vlan 20 root secondary
+
+
+
+--- MLS2 ---
+en
+conf t
+hostname MLS2
+
+vlan 10
+name PC1
+exit
+
+vlan 20
+name PC2
+exit
+
+ip routing
+
+int Gi1/0/1
+no switchport
+ip address 192.168.60.10 255.255.255.252
+description Network MLS2 with R1
+exit
+
+int Gi1/0/2
+no switchport
+ip address 192.168.60.2 255.255.255.252
+description Network MLS2 with MLS1
+exit
+
+int vlan 10
+ip address 192.168.10.2 255.255.255.0
+standby 10 ip 192.168.10.3
+standby 10 priority 100
+standby 10 preempt
+description Network vlan 10
+exit
+
+int vlan 20
+ip address 192.168.20.2 255.255.255.0
+standby 20 ip 192.168.20.3
+standby 20 priority 150
+standby 20 preempt
+description Network vlan 20
+exit
+
+int range Gi1/0/3-4
+switchport mode trunk
+switchport trunk native vlan 1
+switchport trunk allowed vlan 10,20
+exit
+
+spanning-tree vlan 20 root primary
+spanning-tree vlan 10 root secondary
+
+
++-+-+- OSPF -+-+-+
+--- Router1 ---
+router ospf 100
+router-id 1.1.1.1
+network 192.168.60.5 0.0.0.3 area 0
+network 192.168.60.9 0.0.0.3 area 0
+network 192.168.50.5 0.0.0.3 area 1
+exit
+
+--- Router2 ---
+router ospf 100
+router-id 2.2.2.2
+network 192.168.50.6 0.0.0.3 area 1
+exit
+
+--- MLS1 ---
+router ospf 100
+router-id 11.11.11.11
+network 192.168.60.1 0.0.0.3 area 0
+network 192.168.60.6 0.0.0.3 area 0
+network 192.168.10.1 0.0.0.255 area 0
+network 192.168.20.2 0.0.0.255 area 0
+exit
+
+--- MLS2 ---
+router ospf 100
+router-id 22.22.22.22
+network 192.168.60.2 0.0.0.3 area 0
+network 192.168.60.10 0.0.0.3 area 0
+network 192.168.10.2 0.0.0.255 area 0
+network 192.168.20.1 0.0.0.255 area 0
+exit
+
+
++-+-+- VLANS -+-+-+
+--- Switch1 ---
+en
+conf t
+hostname Switch1
+
+vlan 10
+name PC1
+exit
+
+vlan 20
+name PC2
+exit
+
+int range fa0/2, fa0/4
+switchport mode trunk
+switchport trunk native vlan 1
+switchport trunk allowed vlan 10,20
+exit
+
+int fa0/6
+switchport mode access
+switchport access vlan 10
+exit
+
+
+--- Switch2 ---
+en
+conf t
+hostname Switch2
+
+vlan 10
+name PC1
+exit
+
+vlan 20
+name PC2
+exit
+
+int range fa0/2, fa0/4
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+int fa0/6
+switchport mode access
+switchport access vlan 20
+exit
+
+
+
+
+++++++++++++++++++ DEEL 3 & 4 ++++++++++++++++++
+--- Router1 ---
+ip route 0.0.0.0 0.0.0.0 192.168.50.1
+router ospf 100
+default-information originate
+exit
+
+
+++++++++++++++++++++ DEEL 5 ++++++++++++++++++++
+--- Router1 ---
+int Se0/1/0
+ip ospf authentication message-digest
+ip ospf message-digest-key 1 md5 cisco
+exit
+
+--- Router2 ---
+int Se0/1/1
+ip ospf authentication message-digest
+ip ospf message-digest-key 1 md5 cisco
+exit
+
+
+++++++++++++++++++++ DEEL 6 ++++++++++++++++++++
+--- Router1 ---
+router ospf 100
+area 1 range 192.168.32.0 255.255.252.0
+exit
+
+--- Router2 ---
+int loopback 2
+ip address 192.168.32.1 255.255.255.255
+description loopback on router2 as network 192.168.32.0
+exit
+
+int loopback 3
+ip address 192.168.33.1 255.255.255.255
+description loopback on router2 as network 192.168.33.0
+exit
+
+int loopback 4
+ip address 192.168.34.1 255.255.255.255
+description loopback on router2 as network 192.168.34.0
+exit
+
+int loopback 5
+ip address 192.168.35.1 255.255.255.255
+description loopback on router2 as network 192.168.35.0
+exit
+
+router ospf 100
+network 192.168.32.1 0.0.0.0 area 1
+network 192.168.33.1 0.0.0.0 area 1
+network 192.168.34.1 0.0.0.0 area 1
+network 192.168.35.1 0.0.0.0 area 1
+exit
+
+
+
+++++++++++++++++++++ DEEL 7 ++++++++++++++++++++
+--- Router1 --- kies een van de twee - totally stubbed krijgt andere area router 1 default route, niet de rest meer
+router ospf 100
+area 1 stub
+exit
+
+router ospf 100
+area 1 stub no-summary
+exit
+
+--- Router2 ---
+router ospf 100
+area 1 stub
+exit
+
+
+--- Router1 ---
+interface s0/1/0
+ip ospf network point-to-point
+ip ospf hello-interval 10
+ip ospf dead-interval 40
+ip mtu 1500
+exit
+
+--- Router2 ---
+interface s0/1/1
+ip ospf network point-to-point
+ip ospf hello-interval 10
+ip ospf dead-interval 40
+ip mtu 1500
+exit
+
+
+
+++++++++++++++++++++ DEEL 9 ++++++++++++++++++++
+--- ISP ---
+int Se0/1/0
+no shutdown
+clock rate 64000
+ipv6 address 2001:db8:1234::2/64
+description ISP network with the IPv6 network on ISP to Router2
+exit
+
+--- Router1-IPv6 ---
+en
+conf t
+hostname IPv6-R1
+
+int Gi0/0/0
+no shutdown
+ipv6 address 2001:db8:1234:2::1/64
+description Router1 network with PCe
+exit
+
+int Se0/1/1
+no shutdown
+ipv6 address 2001:db8:1234:1::2/64
+description Router1 network with Router2
+exit
+
+
+--- Router2-IPv6 ---
+en
+conf t
+hostname IPv6-R2
+
+int Se0/1/0
+no shutdown
+clock rate 64000
+ipv6 address 2001:db8:1234:1::1/64
+description Router2 network with Router1
+exit
+
+int Se0/1/1
+no shutdown
+ipv6 address 2001:db8:1234::1/64
+description ISP network with the IPv6 network on Router2 to ISP
+exit
+
+
+
+++++++++++++++++++++ DEEL 11 ++++++++++++++++++++
+--- Router1 IPv6 ---
+ipv6 unicast-routing
+
+ipv6 router ospf 100
+router-id 21.21.21.21
+exit
+
+int Se0/1/1 
+ipv6 ospf 100 area 0
+exit
+
+int Gi0/0/0
+ipv6 ospf 100 area 0
+exit
+
+
+--- Router2 IPv6 ---
+ipv6 route ::/0 Se0/1/1 2001:db8:1234::2
+
+ipv6 unicast-routing
+
+ipv6 router ospf 100
+router-id 22.22.22.22
+default-information originate
+exit
+
+int Se0/1/0
+ipv6 ospf 100 area 0
+exit
+
+
+
+++++++++++++++++++++ DEEL 12 ++++++++++++++++++++
+--- ISP ---
+ipv6 route ::/0 Se0/1/0 2001:db8:1234::1
+
+ip route 0.0.0.0 0.0.0.0 Se0/1/1
