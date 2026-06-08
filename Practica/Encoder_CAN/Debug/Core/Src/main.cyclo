@@ -1,0 +1,9 @@
+../Core/Src/main.c:77:5:checkButton	2
+../Core/Src/main.c:88:5:checkEncoder	3
+../Core/Src/main.c:111:5:main	7
+../Core/Src/main.c:238:6:SystemClock_Config	4
+../Core/Src/main.c:299:13:MX_CAN1_Init	2
+../Core/Src/main.c:336:13:MX_USART2_UART_Init	2
+../Core/Src/main.c:371:13:MX_GPIO_Init	1
+../Core/Src/main.c:405:6:sendCan	2
+../Core/Src/main.c:436:6:Error_Handler	1
